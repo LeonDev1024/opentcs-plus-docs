@@ -1,0 +1,23 @@
+{
+  "name": "opentcs-plus-docs",
+  "version": "1.0.0",
+  "description": "OpenTCS Plus 项目文档网站，基于 VitePress 构建",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev src",
+    "docs:build": "vitepress build src",
+    "docs:preview": "vitepress preview src"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  },
+  "keywords": [
+    "opentcs",
+    "agv",
+    "调度系统",
+    "文档"
+  ],
+  "author": "liuyichun",
+  "license": "MIT"
+}
+
