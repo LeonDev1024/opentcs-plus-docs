@@ -1,159 +1,159 @@
 ![logo](../assets/logo.png)
 
-# Interface for the communication between automated guided vehicles (AGV) and a master control
+# 自动导引车（AGV）与主控系统之间的通信接口
 
 ## VDA 5050
 
-## Version 2.1.0
+## 版本 2.1.0
 
-![control system and automated guided vehicles](../assets/csagv.png)
-
-
-
-### Brief information
-
-Definition of a communication interface for driverless transport systems (DTS).
-This recommendation describes the communication interface for exchanging order and status data between a central master control and automated guided vehicles (AGVs) for intralogistics processes.
+![控制系统和自动导引车](../assets/csagv.png)
 
 
 
-### Disclaimer
+### 概述
 
-The following explanations serve as an indication for the execution of an interface for communication between automated guided vehicles (AGVs) and master control and one that is freely applicable to everyone and is non-binding.
-Those who apply them shall ensure that they are applied properly in the specific case.
+无人驾驶运输系统（DTS）通信接口的定义。
+本建议描述了在中央主控系统与自动导引车（AGV）之间交换订单和状态数据的通信接口，用于内部物流流程。
 
-They shall take into account the state of the art prevailing at the time of each issue.
-By applying the proposals, no one is evasive of responsibility for their own actions.
-The statements do not claim to be exhaustive or to the exact interpretation of the existing legislation.
-They may not replace the study of relevant policies, laws, and regulations.
-Furthermore, the special features of the respective products as well as their different possible applications shall be taken into account.
-Everyone acts at their own risk in this regard.
-Liability of the VDA and those involved in the development or application of the proposals is excluded.
 
-If you encounter any inaccuracies in the application of the proposals or the possibility of an incorrect interpretation, please inform the VDA immediately so that any defects can be rectified.
 
-**Publisher**
-Verband der Automobilindustrie e.V. (VDA)
+### 免责声明
+
+以下说明仅作为自动导引车（AGV）与主控系统之间通信接口执行的参考，可自由应用且不具约束力。
+应用者应确保在特定情况下正确应用。
+
+应用时应考虑每个版本发布时普遍的技术水平。
+通过应用这些建议，任何人都不能逃避自己行为的责任。
+这些声明不声称详尽或对现有法规的准确解释。
+它们不能替代对相关政策、法律和法规的研究。
+此外，还应考虑各自产品的特殊特性及其不同的可能应用。
+在这方面，每个人需自行承担风险。
+VDA 以及参与开发或应用这些建议的人员不承担任何责任。
+
+如果您在应用这些建议时遇到任何不准确之处或可能存在错误解释，请立即通知 VDA，以便纠正任何缺陷。
+
+**发布者**
+德国汽车工业协会（VDA）
 Behrenstraße 35, 10117 Berlin,
 Germany
 www.vda.de
 
-**Copyright**
-Association of the Automotive Industry (VDA)
-Reproduction and any other form of reproduction is only permitted with specification of the source.
+**版权**
+德国汽车工业协会（VDA）
+只有在注明来源的情况下才允许复制和任何其他形式的复制。
 
-Version 2.1.0
+版本 2.1.0
 
 
-## Table of contents
+## 目录
 
-[1 Foreword](#1-foreword)<br>
-[2 Objective of the document](#2-objective-of-the-document)<br>
-[3 Scope](#3-scope)<br>
-[3.1 Other applicable documents](#31-other-applicable-documents)<br>
-[4 Requirements and protocol definition](#4-requirements-and-protocol-definition)<br>
-[5 Process and content of communication](#5-process-and-content-of-communication)<br>
-[6 Protocol specification](#6-protocol-specification)<br>
-[6.1 Symbols of the tables and meaning of formatting](#61-symbols-of-the-tables-and-meaning-of-formatting)<br>
-[6.1.1 Optional fields](#611-optional-fields)<br>
-[6.1.2 Permitted characters and field lengths](#612-permitted-characters-and-field-lengths)<br>
-[6.1.3 Notation of enumerations](#613-notation-of-enumerations) <br>
-[6.1.4 JSON data types](#614-json-data-types)<br>
-[6.2 MQTT connection handling, security and QoS](#62-mqtt-connection-handling-security-and-qos)<br>
-[6.3 MQTT topic levels](#63-mqtt-topic-levels)<br>
-[6.4 Protocol header](#64-protocol-header)<br>
-[6.5 Topics for communication](#65-topics-for-communication)<br>
-[6.6 Topic: "order" (from master control to AGV)](#66-topic-orderfrom-master-control-to-agv)<br>
-[6.6.1 Concept and logic](#661-concept-and-logic)<br>
-[6.6.2 Orders and order updates](#662-orders-and-order-update)<br>
-[6.6.3 Order cancellation (by master control)](#663-order-cancellation-by-master-control)<br>
-[6.6.4 Order rejection](#664-order-rejection)<br>
-[6.6.5 Corridors](#665-corridors)<br>
-[6.6.6 Implementation of the order message](#666-implementation-of-the-order-message)<br>
-[6.7 Maps](#67-maps)<br>
-[6.7.1 Map distribution](#671-map-distribution)<br>
-[6.7.2 Maps in vehicle state](#672-maps-in-the-vehicle-state)<br>
-[6.7.3 Map download](#673-map-download)<br>
-[6.7.4 Enable downloaded maps](#674-enable-downloaded-maps)<br>
-[6.7.5 Delete maps on vehicle](#675-delete-maps-on-vehicle)<br>
-[6.8 Actions](#68-actions)<br>
-[6.8.1 Definition, parameters, effects and scope of predefined actions](#681-definition-parameters-effects-and-scope-of-predefined-actions)<br>
-[6.8.2 States of predefined actions](#682-states-of-predefined-actions)<br>
-[6.9 Topic: "instantActions" (from master control to AGV)](#69-topic-instantactions-from-master-control-to-agv)<br>
-[6.10 Topic: "state" (from AGV to master control)](#610-topic-state-from-agv-to-master-control)<br>
-[6.10.1 Concept and logic](#6101-concept-and-logic)<br>
-[6.10.2 Traversal of nodes and entering/leaving edges, triggering of actions](#6102-traversal-of-nodes-and-enteringleaving-edges-triggering-of-actions)<br>
-[6.10.3 Base request](#6103-base-request)<br>
-[6.10.4 Information](#6104-information)<br>
-[6.10.5 Errors](#6105-errors)<br>
-[6.10.6 Implementation of the state message](#6106-implementation-of-the-state-message)<br>
+[1 前言](#1-foreword)<br>
+[2 文档目标](#2-objective-of-the-document)<br>
+[3 范围](#3-scope)<br>
+[3.1 其他适用文档](#31-other-applicable-documents)<br>
+[4 要求和协议定义](#4-requirements-and-protocol-definition)<br>
+[5 通信流程和内容](#5-process-and-content-of-communication)<br>
+[6 协议规范](#6-protocol-specification)<br>
+[6.1 表格符号和格式含义](#61-symbols-of-the-tables-and-meaning-of-formatting)<br>
+[6.1.1 可选字段](#611-optional-fields)<br>
+[6.1.2 允许的字符和字段长度](#612-permitted-characters-and-field-lengths)<br>
+[6.1.3 枚举的表示法](#613-notation-of-enumerations) <br>
+[6.1.4 JSON 数据类型](#614-json-data-types)<br>
+[6.2 MQTT 连接处理、安全性和 QoS](#62-mqtt-connection-handling-security-and-qos)<br>
+[6.3 MQTT 主题层级](#63-mqtt-topic-levels)<br>
+[6.4 协议头](#64-protocol-header)<br>
+[6.5 通信主题](#65-topics-for-communication)<br>
+[6.6 主题："order"（从主控系统到 AGV）](#66-topic-orderfrom-master-control-to-agv)<br>
+[6.6.1 概念和逻辑](#661-concept-and-logic)<br>
+[6.6.2 订单和订单更新](#662-orders-and-order-update)<br>
+[6.6.3 订单取消（由主控系统）](#663-order-cancellation-by-master-control)<br>
+[6.6.4 订单拒绝](#664-order-rejection)<br>
+[6.6.5 通道](#665-corridors)<br>
+[6.6.6 订单消息的实现](#666-implementation-of-the-order-message)<br>
+[6.7 地图](#67-maps)<br>
+[6.7.1 地图分发](#671-map-distribution)<br>
+[6.7.2 车辆状态中的地图](#672-maps-in-the-vehicle-state)<br>
+[6.7.3 地图下载](#673-map-download)<br>
+[6.7.4 启用已下载的地图](#674-enable-downloaded-maps)<br>
+[6.7.5 删除车辆上的地图](#675-delete-maps-on-vehicle)<br>
+[6.8 动作](#68-actions)<br>
+[6.8.1 预定义动作的定义、参数、效果和范围](#681-definition-parameters-effects-and-scope-of-predefined-actions)<br>
+[6.8.2 预定义动作的状态](#682-states-of-predefined-actions)<br>
+[6.9 主题："instantActions"（从主控系统到 AGV）](#69-topic-instantactions-from-master-control-to-agv)<br>
+[6.10 主题："state"（从 AGV 到主控系统）](#610-topic-state-from-agv-to-master-control)<br>
+[6.10.1 概念和逻辑](#6101-concept-and-logic)<br>
+[6.10.2 节点的遍历和边的进入/离开，动作的触发](#6102-traversal-of-nodes-and-enteringleaving-edges-triggering-of-actions)<br>
+[6.10.3 基础请求](#6103-base-request)<br>
+[6.10.4 信息](#6104-information)<br>
+[6.10.5 错误](#6105-errors)<br>
+[6.10.6 状态消息的实现](#6106-implementation-of-the-state-message)<br>
 [6.11 actionStates](#611-actionstates)<br>
-[6.12 Action blocking types and sequence](#612-action-blocking-types-and-sequence)<br>
-[6.13 Topic "visualization"](#613-topic-visualization)<br>
-[6.14 Topic "connection"](#614-topic-connection)<br>
-[6.15 Topic "factsheet"](#615-topic-factsheet)<br>
-[6.15.1 Factsheet JSON structure](#6151-factsheet-json-structure)<br>
-[7 Best practice](#7-best-practice)<br>
-[7.1 Error reference](#71-error-reference)<br>
-[7.2 Format of parameters](#72-format-of-parameters)<br>
-[8 Glossary](#8-glossary)<br>
-[8.1 Definition](#81-definition)<br>
+[6.12 动作阻塞类型和顺序](#612-action-blocking-types-and-sequence)<br>
+[6.13 主题 "visualization"](#613-topic-visualization)<br>
+[6.14 主题 "connection"](#614-topic-connection)<br>
+[6.15 主题 "factsheet"](#615-topic-factsheet)<br>
+[6.15.1 Factsheet JSON 结构](#6151-factsheet-json-structure)<br>
+[7 最佳实践](#7-best-practice)<br>
+[7.1 错误引用](#71-error-reference)<br>
+[7.2 参数格式](#72-format-of-parameters)<br>
+[8 术语表](#8-glossary)<br>
+[8.1 定义](#81-definition)<br>
 
 
-# 1 Foreword
+# 1 前言
 
-The interface was established in cooperation between the Verband der Automobilindustrie e.V. (VDA) and Verband Deutscher Maschinen- und Anlagenbau e. V. (VDMA).
-The aim of both parties is to create a universally applicable interface.
-Proposals for changes to the interface shall be submitted to the VDA, are evaluated jointly with the VDMA and adopted into a new version status in the event of a positive decision.
-The contribution to this document via GitHub is greatly appreciated.
-The repository can be found at the following link: https://github.com/vda5050/vda5050.
-
-
-# 2 Objective of the document
-
-The objective of the recommendation is to simplify the connection of new vehicles to an existing master control system and to enable parallel operation with AGVs from different manufacturers and conventional systems (inventory systems) in the same working environment.
-
-A uniform interface between a master control and AGVs shall be defined.
-This should be achieved by the following points:
-
-- Description of a standard for communication between AGV and master control and thus a basis for the integration of transport systems into a continuous process automation using co-operating transport vehicles.
-- Increase in flexibility through, among other things, increased vehicle autonomy, process modules and interface, and preferably the separation of a rigid sequence of event-controlled command chains.
-- Reduction of implementation time due to high "Plug & Play" capability, as required information (e.g., order information) are provided by central services and are generally valid. Vehicles should be able to be put into operation independently of the manufacturer with the same implementation effort taking into account the requirements of occupational safety.
-- Complexity reduction and increase of the "Plug & Play" capability of the systems through the use of uniform, overarching coordination with the corresponding logic for all transport vehicles, vehicle models and manufacturers.
-- Increase in manufacturers' independence using common interfaces between vehicle control and coordination level.
-- Integration of proprietary DTS inventory systems by implementing vertical communication between the proprietary master control and the superordinate master control (cf. Figure 1).
-
-![Figure 1 Integration of DTS inventory systems](../assets/concept_DTS.png)
->Figure 1 Integration of DTS inventory systems
-
-In order to implement the above-mentioned objectives, this document describes an interface for the communication of order and status information between AGV and master control.
-
-Other interfaces required for operation between AGV and master control (e.g., taking special skills freely into account with regard to path planning, etc.) or for communicating with other system components (e.g., external peripherals, fire protection gates, etc.) are not initially included in this document.
+该接口由德国汽车工业协会（VDA）和德国机械设备制造业联合会（VDMA）合作建立。
+双方的目标是创建一个普遍适用的接口。
+对接口的修改建议应提交给 VDA，与 VDMA 共同评估，并在做出积极决定后采用到新版本中。
+通过 GitHub 对本文档的贡献深表感谢。
+存储库可在以下链接找到：https://github.com/vda5050/vda5050。
 
 
-# 3 Scope
+# 2 文档目标
 
-This recommendation contains definitions and best practice regarding communication between automated guided vehicles (AGVs) and master control.
-The goal is to allow AGVs with different characteristics (e.g., underrun tractor or fork lift AGV) to communicate with master control in a uniform language. 
-This creates the basis for operating any combination of AGVs in a master control.
-The master control provides orders and coordinates the AGV traffic.
+本建议的目标是简化新车辆与现有主控系统的连接，并实现在同一工作环境中与来自不同制造商和传统系统（库存系统）的 AGV 并行运行。
 
-The interface is based on the requirements from production and plant logistics in the automotive industry.
-According to the formulated requirements, the requirements of intralogistics cover the requirements of the logistics department, i.e., the logistical processes from goods receiving to production supply to goods out, through control of freely navigating vehicles and guided vehicles.
+应定义主控系统与 AGV 之间的统一接口。
+这应通过以下要点实现：
 
-In contrast to automated vehicles, autonomous vehicles solve problems that occur on the basis of the corresponding sensor system and algorithms independently and can react accordingly to changes in a dynamic environment or be adapted to them shortly afterwards.
-Autonomous properties such as the independent bypassing of obstacles can be fulfilled by freely navigating vehicles as well as guided vehicles.
-However, as soon as the path planning is carried out on the vehicle itself, this document describes freely navigating vehicles (see glossary).
-Autonomous systems are not completely decentralized (swarm intelligence) and have defined behavior through predefined rules.
+- 描述 AGV 与主控系统之间的通信标准，从而为将运输系统集成到使用协作运输车辆的连续流程自动化中提供基础。
+- 通过增加车辆自主性、流程模块和接口等方式提高灵活性，最好是将刚性的事件控制命令链序列分离。
+- 由于高"即插即用"能力，所需信息（例如，订单信息）由中央服务提供且普遍有效，从而减少实施时间。考虑到职业安全要求，车辆应能够独立于制造商以相同的实施工作量投入运行。
+- 通过使用统一的、跨所有运输车辆、车型和制造商的协调逻辑，降低系统复杂性并提高"即插即用"能力。
+- 通过在车辆控制和协调级别之间使用通用接口，提高制造商的独立性。
+- 通过在专有主控系统与上级主控系统之间实现垂直通信，集成专有 DTS 库存系统（参见图 1）。
 
-For the purpose of a sustainable solution, an interface is described below which can be expanded in its structure.
-This should enable a complete coverage of the master control for vehicles that are guided.
-Vehicles that are freely navigating can be integrated into the structure; a detailed specification required for this is not part of this recommendation.
+![图 1 DTS 库存系统的集成](../assets/concept_DTS.png)
+>图 1 DTS 库存系统的集成
 
-For the integration of proprietary stock systems, individual definitions of the interface may be required, which are not considered as part of this recommendation.
+为了实现上述目标，本文档描述了 AGV 与主控系统之间订单和状态信息通信的接口。
+
+AGV 与主控系统之间运行所需的其他接口（例如，在路径规划方面自由考虑特殊技能等）或与其他系统组件通信的接口（例如，外部外围设备、防火门等）最初不包含在本文档中。
 
 
-## 3.1 Other applicable documents
+# 3 范围
+
+本建议包含关于自动导引车（AGV）与主控系统之间通信的定义和最佳实践。
+目标是允许具有不同特性的 AGV（例如，低矮牵引车或叉车 AGV）以统一语言与主控系统通信。
+这为在主控系统中操作任何 AGV 组合奠定了基础。
+主控系统提供订单并协调 AGV 交通。
+
+该接口基于汽车行业生产和工厂物流的要求。
+根据制定的要求，内部物流的要求涵盖了物流部门的要求，即从货物接收、生产供应到货物发出的物流流程，通过控制自由导航车辆和导引车辆。
+
+与自动化车辆相比，自主车辆基于相应的传感器系统和算法独立解决问题，并能够相应地响应动态环境的变化或在此后不久适应这些变化。
+诸如独立绕过障碍物等自主特性可以由自由导航车辆和导引车辆实现。
+但是，一旦路径规划在车辆本身上进行，本文档描述的是自由导航车辆（参见术语表）。
+自主系统并非完全去中心化（群体智能），而是通过预定义规则具有定义的行为。
+
+为了提供可持续的解决方案，下面描述了一个可以在其结构中扩展的接口。
+这应该能够为主控系统对导引车辆实现完整覆盖。
+自由导航车辆可以集成到该结构中；为此所需的详细规范不属于本建议的一部分。
+
+对于专有库存系统的集成，可能需要接口的个别定义，这些定义不作为本建议的一部分考虑。
+
+
+## 3.1 其他适用文档
 
 Document | Version | Description
 ---|---|---
@@ -162,96 +162,96 @@ VDI Guideline 4451 Sheet 7 | October 2005 | Compatibility of driverless transpor
 DIN EN ISO 3691-4 | December 2023 | Industrial Trucks Safety Requirements and Verification-Part 4: Driverless trucks and their systems
 LIF – Layout Interchange Format| March 2024 | Definition of a format of track layouts for exchange between the integrator of the driverless transport vehicles and a (third-party) master control system.
 
-# 4 Requirements and protocol definition
+# 4 要求和协议定义
 
-The communication interface is designed to support the following requirements:
+通信接口设计用于支持以下要求：
 
-- Control of min. 1000 vehicles
-- Enabling the integration of vehicles with different degrees of autonomy
-- Enable decision, e.g., with regard to the selection of routes or the behavior at intersections
+- 控制至少 1000 辆车辆
+- 支持集成具有不同自主程度的车辆
+- 支持决策，例如，关于路线选择或交叉路口行为
 
-Vehicles should transfer their status at a regular interval or when their status changes.
+车辆应定期或在状态发生变化时传输其状态。
 
-Communication is done over wireless networks, taking into account the effects of connection failures and loss of messages.
+通信通过无线网络进行，考虑连接故障和消息丢失的影响。
 
-The message protocol is Message Queuing Telemetry Transport (MQTT), which is to be used in conjunction with a JSON structure.
-MQTT 3.1.1 was tested during the development of this protocol and is the minimum required version for compatibility.
-MQTT allows the distribution of messages to subchannels, which are called "topics".
-Participants in the MQTT network subscribe to these topics and receive information that concerns or interests them.
+消息协议是消息队列遥测传输（MQTT），与 JSON 结构结合使用。
+MQTT 3.1.1 在本协议开发期间进行了测试，是兼容性所需的最低版本。
+MQTT 允许将消息分发到称为"主题"的子通道。
+MQTT 网络中的参与者订阅这些主题并接收与他们相关或感兴趣的信息。
 
-The JSON structure allows for a future extension of the protocol with additional parameters.
-The parameters are described in English to ensure that the protocol is readable, comprehensible and applicable outside the German-speaking area.
-
-
-# 5 Process and content of communication
-
-There are at least the following participants for the operation of AGVs:
-
-- The operator of the AGV system provides basic information
-- The master control organizes and manages the operation
-- The AGV carries out the orders
-
-Figure 2 describes the communication content during the operational phase.
-During implementation or modification, the AGV and master control are manually configured.
-
-![Figure 2 Structure of the Information Flow](../assets/information_flow_VDA5050.png)
->Figure 2 Structure of the Information Flow
-
-During the implementation phase, the driverless transport systems (DTS) consisting of master control and AGVs is set up.
-The necessary framework conditions are defined by the operator and the required information is either entered manually by them or stored in the master control by importing from other systems.
-Essentially, this concerns the following content:
-
-- Definition of routes: Using CAD import, routes can be imported to the master control.
-Alternatively, routes can also be implemented manually in the master control by the operator.
-Routes can be one-way streets, restricted for certain vehicle groups (based on the size ratios), etc.
-- Route network configuration:
-Within the routes, stations for loading and unloading, battery charging stations, peripheral environments (gates, elevators, barriers), waiting positions, buffer stations, etc. are defined.
-- Vehicle configuration: The physical properties of an AGV (size, available load carrier mounts, etc.) are stored by the operator.
-The AGV shall communicate this information via the topic `factsheet` in a specific way that is defined in Section [6.15 Topic "Factsheet"](#615-topic-factsheet) of this document.
-
-The configuration of routes and the route network described above are not part of this document.
-They form the basis for enabling order control and driving course assignment by the master control based on this information and the transport requirements to be completed.
-The resulting orders for an AGV are then transferred to the vehicle via an MQTT message broker.
-This then continuously reports its status to the master control in parallel with the execution of the job.
-This is also done using the MQTT message broker.
-
-Functions of the master control are:
-
-- Assignment of orders to the AGVs
-- Route calculation and guidance of the AGVs (taking into account the limitations of the individual physical properties of each AGV, e.g., size, maneuverability, etc.)
-- Detection and resolution of blockages ("deadlocks")
-- Energy management: Charging orders can interrupt transfer orders
-- Traffic control: Buffer routes and waiting positions
-- (Temporary) changes in the environment, such as freeing certain areas or changing the maximum speed
-- Communication with peripheral systems such as doors, gates, elevators, etc.
-- Detection and resolution of communication errors
-
-Functions of the AGVs are:
-
-- Localization
-- Navigation along associated routes (guided or autonomous)
-- Execution of actions
-- Continuous transmission of vehicle status
-
-In addition, the integrator shall take into account the following when configuring the overall system (incomplete list):
-
-- Map configuration: The coordinate systems of the master control and the AGV shall be matched.
-- Pivot point: The use of different points of the AGV or points of charge as a pivot point leads to different envelopes of the vehicle. The reference point may vary depending on the situation, e.g., it may be different for an AGV carrying a load and for an AGV that does not carry a load.
+JSON 结构允许将来使用附加参数扩展协议。
+参数用英语描述，以确保协议在德语区以外可读、可理解且适用。
 
 
-# 6 Protocol specification
+# 5 通信流程和内容
 
-The following section describes the details of the communication protocol.
-The protocol specifies the communication between the master control and the AGV.
-Communication between the AGV and peripheral equipment, e.g., between the AGV and a gate, is excluded.
+AGV 运行至少涉及以下参与者：
 
-The different messages are presented in tables describing the contents of the fields of the JSON that is sent as an order, state, etc.
+- AGV 系统的操作员提供基本信息
+- 主控系统组织和管理运行
+- AGV 执行订单
 
-In addition, JSON schemas are available for validation in the public git repository (https://github.com/VDA5050/VDA5050).
-The JSON schemas are updated with every release of the VDA5050. If there are differences between the JSON schemas and this document, the variant in this document applies.
+图 2 描述了运行阶段的通信内容。
+在实施或修改期间，AGV 和主控系统需要手动配置。
+
+![图 2 信息流结构](../assets/information_flow_VDA5050.png)
+>图 2 信息流结构
+
+在实施阶段，由主控系统和 AGV 组成的无人驾驶运输系统（DTS）被建立。
+必要的框架条件由操作员定义，所需信息由操作员手动输入或通过从其他系统导入存储在主控系统中。
+基本上，这涉及以下内容：
+
+- 路线定义：使用 CAD 导入，可以将路线导入到主控系统。
+或者，操作员也可以在主控系统中手动实现路线。
+路线可以是单行道，限制某些车辆组（基于尺寸比例）等。
+- 路线网络配置：
+在路线内，定义了装卸站、电池充电站、外围环境（门、电梯、屏障）、等待位置、缓冲站等。
+- 车辆配置：AGV 的物理属性（尺寸、可用的载货架安装点等）由操作员存储。
+AGV 应通过主题 `factsheet` 以本文档第 [6.15 主题 "Factsheet"](#615-topic-factsheet) 中定义的特定方式传达此信息。
+
+上述路线和路线网络的配置不属于本文档的一部分。
+它们构成了主控系统基于此信息和要完成的运输要求启用订单控制和行驶路线分配的基础。
+然后，AGV 的订单通过 MQTT 消息代理传输到车辆。
+然后，车辆在执行作业的同时持续向主控系统报告其状态。
+这也使用 MQTT 消息代理完成。
+
+主控系统的功能包括：
+
+- 向 AGV 分配订单
+- 路线计算和 AGV 引导（考虑每个 AGV 的个体物理属性限制，例如尺寸、机动性等）
+- 检测和解决阻塞（"死锁"）
+- 能源管理：充电订单可以中断运输订单
+- 交通控制：缓冲路线和等待位置
+- 环境（临时）变化，例如释放某些区域或更改最大速度
+- 与外围系统（如门、门禁、电梯等）的通信
+- 检测和解决通信错误
+
+AGV 的功能包括：
+
+- 定位
+- 沿相关路线导航（导引或自主）
+- 执行动作
+- 持续传输车辆状态
+
+此外，集成商在配置整个系统时应考虑以下事项（不完整列表）：
+
+- 地图配置：主控系统和 AGV 的坐标系应匹配。
+- 枢轴点：使用 AGV 的不同点或充电点作为枢轴点会导致车辆的不同包络。参考点可能因情况而异，例如，对于载有负载的 AGV 和不载负载的 AGV 可能不同。
 
 
-## 6.1 Symbols of the tables and meaning of formatting
+# 6 协议规范
+
+以下部分描述了通信协议的详细信息。
+协议规定了主控系统与 AGV 之间的通信。
+AGV 与外围设备之间的通信（例如，AGV 与门禁之间）不包括在内。
+
+不同的消息以表格形式呈现，描述作为订单、状态等发送的 JSON 字段内容。
+
+此外，公共 git 存储库（https://github.com/VDA5050/VDA5050）中提供了用于验证的 JSON 模式。
+JSON 模式随 VDA5050 的每次发布而更新。如果 JSON 模式与本文档之间存在差异，以本文档中的版本为准。
+
+
+## 6.1 表格符号和格式含义
 
 The table contains the name of the identifier, its unit, its data type, and a description, if any.
 
@@ -268,7 +268,7 @@ All field names are in camelCase.
 All enumerations are in UPPERCASE without underscores.
 
 
-### 6.1.1 Optional fields
+### 6.1.1 可选字段
 
 If a variable is marked as optional, it means that it is optional for the sender because the variable might not be applicable in certain cases (e.g., when the master control sends an order to an AGV, some AGVs plan their trajectory themselves and the field `trajectory` within the `edge` object of the order can be omitted).
 
@@ -283,7 +283,7 @@ If an AGV cannot process trajectories, master control shall not send a trajector
 The AGV shall communicate which optional parameters it needs via an AGV `factsheet` message.
 
 
-### 6.1.2 Permitted characters and field lengths
+### 6.1.2 允许的字符和字段长度
 
 All communication is encoded in UTF-8 to enable international adaption of descriptions.
 The recommendation is that IDs should only use the following characters:
@@ -296,21 +296,21 @@ The matching of maximum field lengths, string lengths or value ranges is up to t
 For ease of integration, AGV vendors shall supply an AGV factsheet that is detailed in [Factsheet Section](#616-topic-factsheet).
 
 
-### 6.1.3 Notation of fields, topics and enumerations
+### 6.1.3 字段、主题和枚举的表示法
 
 Topics and fields in this document are highlighted in the following style: `exampleField` and `exampleTopic`.
 Enumerations shall be written in uppercase. These values are enclosed in single quotation marks in the document.
 This includes keywords such as in the `actionStatus` field ('WAITING', 'FINISHED', etc.).
 
 
-### 6.1.4 JSON data types
+### 6.1.4 JSON 数据类型
 
 Where possible, JSON data types shall be used.
 A Boolean value is thus encoded by "true" or "false", not with an enumeration ('TRUE', 'FALSE') or magic numbers.
 Numerical data types are specified with type and precision, e.g., float64 or uint32. Special number values from the IEEE 754 like NaN and infinity are not supported.
 
 
-## 6.2 MQTT connection handling, security and QoS
+## 6.2 MQTT 连接处理、安全性和 QoS
 
 The MQTT protocol provides the option of setting a last will message for a client.
 If the client disconnects unexpectedly for any reason, the last will is distributed by the broker to other subscribed clients.
@@ -324,7 +324,7 @@ To reduce the communication overhead, the MQTT QoS level 0 (Best Effort) is to b
 The topic `connection` shall use the QoS level 1 (At Least Once).
 
 
-## 6.3 MQTT topic levels
+## 6.3 MQTT 主题层级
 
 The MQTT topic structure is not strictly defined due to the mandatory topic structure of cloud providers.
 For a cloud-based MQTT broker the topic structure has to be adapted individually to match the topics defined in this protocol.
@@ -351,7 +351,7 @@ Note: Since the `/` character is used to define topic hierarchies, it shall not 
 The `$` character is also used in some MQTT brokers for special internal topics, so it should not be used either.
 
 
-## 6.4 Protocol header
+## 6.4 协议头
 
 Each JSON message starts with a header.
 In the following sections, the following fields will be referenced as header for readability.
@@ -384,7 +384,7 @@ Examples for patch version:
 - Higher available precision for a batteryCharge
 
 
-## 6.5 Topics for communication
+## 6.5 通信主题
 
 The AGV protocol uses the following topics for information exchange between master control and AGV.
 
@@ -398,12 +398,12 @@ connection | Broker/AGV | master control | Indicates when AGV connection is lost
 factsheet | AGV | master control | Parameters or vendor-specific information to assist set-up of the AGV in master control | mandatory | factsheet.schema
 
 
-## 6.6 Topic: "order" (from master control to AGV)
+## 6.6 主题："order"（从主控系统到 AGV）
 
 The topic "order" is the MQTT topic via which the AGV receives a JSON encapsulated order.
 
 
-### 6.6.1 Concept and logic
+### 6.6.1 概念和逻辑
 
 The basic structure of an order is a graph of nodes and edges.
 The AGV is expected to traverse the nodes and edges to fulfill the order.
@@ -442,7 +442,7 @@ For traffic control and to accommodate resource constrained vehicles, the full t
 The process of updating an order is described in the next section.
 
 
-### 6.6.2 Orders and order update
+### 6.6.2 订单和订单更新
 
 To support traffic management, master control can split the path communicated via order into two parts:
 
@@ -564,7 +564,7 @@ Are `nodeStates` not empty or are `actionStates` containing states which are nei
 9)	populate/append states refers to the `actionStates`/`nodeStates`/`edgeStates`.
 
 
-### 6.6.3 Order cancellation (by master control)
+### 6.6.3 订单取消（由主控系统）
 
 In the event of an unplanned change in the base nodes, the order shall be canceled by using the instantAction `cancelOrder`.
 
@@ -607,7 +607,7 @@ The AGV shall report a "noOrderToCancel" error with the `errorLevel` set to 'WAR
 The `actionId` of the `instantAction` shall be passed as an `errorReference`.
 
 
-### 6.6.4 Order rejection
+### 6.6.4 订单拒绝
 
 There are several scenarios, when an order shall be rejected.
 These scenarios are shown in Figure 8 and described below.
@@ -648,7 +648,7 @@ Resolution:
 If the AGV receives an order with the same `orderId` and `orderUpdateId` twice, the second order will be ignored. 
 This might happen, if the master control resends the order because the state message was received too late by master control and it could therefore not verify that the first order had been received.
 
-### 6.6.5 Corridors
+### 6.6.5 通道
 
 The optional `corridor` edge attribute allows the vehicle to deviate from the edge trajectory for obstacle avoidance and defines the boundaries within which the vehicle is allowed to operate.
 To use the `corridor` attribute, a predefined trajectory is required that the vehicle would follow if no `corridor` attribute was defined. This can be either the trajectory defined on the vehicle known to the master control or the trajectory sent in an order. The behavior of a vehicle using the `corridor` attribute is still the behavior of a line-guided vehicle, except that it's allowed to temporarily deviate from a trajectory to avoid obstacles.
@@ -765,7 +765,7 @@ leftWidth | m | float64 | Range: [0.0 ... float64.max]<br>Defines the width of t
 rightWidth | m | float64 | Range: [0.0 ... float64.max]<br>Defines the width of the corridor in meters to the right related to the trajectory of the vehicle (see Figure 13).
 *corridorRefPoint* <br><br>**}**| | string | Defines whether the boundaries are valid for the kinematic center or the contour of the vehicle. If not specified the boundaries are valid to the vehicles kinematic center.<br> Enum { 'KINEMATICCENTER' , 'CONTOUR' }
 
-### 6.7 Maps
+### 6.7 地图
 
 To ensure consistent navigation among different types of AGVs, the position is always specified in reference to the project-specific coordinate system (see Figure 11).
 For the differentiation between different levels of a site or location, a unique `mapId` is used.
@@ -832,7 +832,7 @@ The master control can request the deletion of a specific map from a vehicle. Th
 After successfully deleting a map, it is important to remove that map's entry from the vehicle's array of maps in the vehicle state.
 
 
-## 6.8 Actions
+## 6.8 动作
 
 If the AGV supports actions other than driving, these actions are executed via the action field that is attached to either a node or an edge, or sent via the separate topic `instantActions` (see Section [6.10 Topic "instantActions"](#610-topic-instantactions-from-master-control-to-agv)).
 
@@ -901,7 +901,7 @@ cancelOrder | - | AGV is stopping or driving, until it reaches the next node. | 
 factsheetRequest | - | - | - | The factsheet has been communicated | -
 
 
-## 6.9 Topic: "instantActions" (from master control to AGV)
+## 6.9 主题："instantActions"（从主控系统到 AGV）
 
 In certain cases, it is necessary to send actions to the AGV that need to be performed immediately.
 This is made possible by publishing an `instantAction` message to the topic `instantActions`.
@@ -928,7 +928,7 @@ The `actionStatus` is updated according to the progress of the action.
 See also Figure 16 for the different transitions of an `actionStatus`.
 
 
-## 6.10 Topic: "state" (from AGV to master control)
+## 6.10 主题："state"（从 AGV 到主控系统）
 
 The AGV state will be transmitted on only one topic.
 Compared to separate messages (e.g., for orders, battery state and errors) using one topic will reduce the workload of the broker and the master control for handling messages, while also keeping the information about the AGV state synchronized.
@@ -1176,7 +1176,7 @@ TEACHIN | Master control is not in control of the AGV. <br>Supervisor doesn't se
 >Table 1 The operating modes and their meaning
 
 
-## 6.11 Action states
+## 6.11 动作状态
 
 When an AGV receives an `action` (either attached to a `node` or `edge` or via an `instantAction`), it shall represent this `action` with an `actionState` in its `actionStates` array.
 
@@ -1201,7 +1201,7 @@ A state transition diagram is provided in Figure 16.
 >Figure 16 All possible status transitions for actionStates
 
 
-## 6.12 Action blocking types and sequence
+## 6.12 动作阻塞类型和顺序
 
 The order of multiple actions in a list define the sequence, in which those actions are to be executed.
 The parallel execution of actions is governed by their respective `blockingType`.
@@ -1222,7 +1222,7 @@ If there are multiple actions on the same node with different blocking types, Fi
 >Figure 17 Handling multiple actions
 
 
-## 6.13 Topic "visualization"
+## 6.13 主题 "visualization"
 
 For a near real-time position update the AGV can broadcast its position and velocity on the topic `visualization`.
 
@@ -1231,7 +1231,7 @@ For additional information see Section [6.10.6 Implementation of the state messa
 The update rate for this topic is defined by the integrator.
 
 
-## 6.14 Topic "connection"
+## 6.14 主题 "connection"
 
 During the connection of an AGV client to the broker, a last will topic and message can be set, which is published by the broker upon disconnection of the AGV client from the broker.
 Thus, the master control can detect a disconnection event by subscribing the connection topics of all AGVs.
@@ -1275,7 +1275,7 @@ All messages on this topic shall be sent with a retained flag.
 When connection between the AGV and the broker stops unexpectedly, the broker will send the last will topic: "uagv/v2/manufacturer/SN/connection" with the field `connectionState` set to `CONNECTIONBROKEN`.
 
 
-## 6.15 Topic "factsheet"
+## 6.15 主题 "factsheet"
 
 The factsheet provides basic information about a specific AGV type series.
 This information allows comparison of different AGV types and can be applied for the planning, dimensioning, and simulation of an AGV system.
@@ -1496,11 +1496,11 @@ This JSON object details the software and hardware versions running on the vehic
 | &emsp;} | | |
 
 
-# 7 Best practice
+# 7 最佳实践
 
 This section includes additional information, which helps in facilitating a common understanding concurrent with the logic of the protocol.
 
-## 7.1 Error reference
+## 7.1 错误引用
 
 If an error occurs due to an erroneous order, the AGV should return a meaningful error reference in the field errorReferences (see Section [6.10.6 Implementation of the state message](#6106-implementation-of-the-state-message) of the state topic).
 This can include the following information:
@@ -1514,7 +1514,7 @@ This can include the following information:
 If an action cannot be completed because of external factors (e.g., no load at expected position), the actionId should be referenced.
 
 
-## 7.2 Format of parameters
+## 7.2 参数格式
 
 Parameters for errors, information and actions are designed as an array of JSON objects with key-value pairs.
 
@@ -1535,14 +1535,14 @@ Examples for the `actionParameter` of an action "someAction" with key-value pair
 The reason for using the proposed scheme of "key": "actualKey", "value": "actualValue" is to keep the implementation generic. The "actualValue" can be of any possible JSON data type, such as float, bool, and even an object.
 
 
-# 8 Glossary
+# 8 术语表
 
 
-## 8.1 Definition
+## 8.1 定义
 
 Concept | Description
 ---|---
-Free navigation AGVs | Vehicles that use a map to plan their own path. <br>The master control sends only start and destination coordinates.<br>The vehicle sends its path to the master control.<br>When connection to the master control is broken, the vehicle is able to continue its journey.<br>Free-navigation vehicles may be allowed to bypass local obstacles.<br>It may also be possible that a fine adjustment of the receiving/dispensing position are made by the vehicle itself.
-Guided vehicles (physical or virtual) | Vehicles that get their path sent by the master control. <br>The calculation of the path takes place in the master control.<br>When communication to the master control is broken off, the vehicle terminates its released nodes and edges (the "base") and then stops.<br>Guided vehicles may be allowed to bypass local obstacles.<br>It may also be possible that fine adjustments of the receiving/dispensing position are made by the vehicle itself.
-Central map | The maps that will be held centrally in the master control.<br> This is initially created and then used.
+自由导航 AGV | 使用地图规划自己路径的车辆。<br>主控系统仅发送起点和目的地坐标。<br>车辆将其路径发送给主控系统。<br>当与主控系统的连接中断时，车辆能够继续其行程。<br>自由导航车辆可能被允许绕过局部障碍物。<br>车辆本身也可能对接收/分发位置进行精细调整。
+导引车辆（物理或虚拟） | 从主控系统接收路径的车辆。<br>路径的计算在主控系统中进行。<br>当与主控系统的通信中断时，车辆完成其已释放的节点和边（"基础"），然后停止。<br>导引车辆可能被允许绕过局部障碍物。<br>车辆本身也可能对接收/分发位置进行精细调整。
+中央地图 | 将在主控系统中集中保存的地图。<br>这是最初创建然后使用的。
 
