@@ -9,7 +9,7 @@
     "docs:preview": "vitepress preview src"
   },
   "devDependencies": {
-    "vitepress": "^1.0.0"
+    "vitepress": "^1.6.4"
   },
   "keywords": [
     "opentcs",
@@ -20,4 +20,3 @@
   "author": "liuyichun",
   "license": "MIT"
 }
-
