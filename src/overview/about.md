@@ -88,6 +88,6 @@ OpenTCS Plus 适用于以下场景：
 
 ## 联系方式
 
-- GitHub: [https://github.com/LeonDev1024/opentcs-plus](https://github.com/LeonDev1024/opentcs-plus)
-- 前端项目: [https://github.com/LeonDev1024/opentcs-plus-web](https://github.com/LeonDev1024/opentcs-plus-web)
+- 邮箱：<liu_yichun@163.com>
+- 微信：JasonExplorer
 
