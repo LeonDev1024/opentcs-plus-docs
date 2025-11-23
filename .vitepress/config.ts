@@ -25,7 +25,8 @@ export default defineConfig({
         text: '开发指南', 
         items: [
           { text: '后端开发', link: '/development/backend' },
-          { text: '前端开发', link: '/development/frontend' }
+          { text: '前端开发', link: '/development/frontend' },
+          { text: 'VDA5050协议', link: '/development/VDA5050_ZH' }
         ] 
       },
       { text: '版本', link: '/overview/version' },
@@ -55,7 +56,8 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: '后端开发', link: '/development/backend' },
-          { text: '前端开发', link: '/development/frontend' }
+          { text: '前端开发', link: '/development/frontend' },
+          { text: 'VDA5050协议中文版', link: '/development/VDA5050_ZH' }
         ]
       }
     ],
