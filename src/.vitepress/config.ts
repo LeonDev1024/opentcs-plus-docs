@@ -25,7 +25,7 @@ export default defineConfig({
           text: '概述',
           items: [
             { text: '关于', link: '/overview/about' },
-            { text: '为什么选择 OpenTCS', link: '/overview/why' },
+            { text: '基本概念', link: '/overview/basic_concepts' },
             { text: '版本信息', link: '/overview/version' }
           ]
         }
