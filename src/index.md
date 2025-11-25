@@ -2,8 +2,8 @@
 layout: home
 
 hero:
-  name: OpenTCSPlus
-  text: 企业级AMR调度系统
+  name: OpentcsPlus
+  //text: 企业级AMR调度系统
   tagline: 基于 OpenTCS 核心思想构建，提供更现代化的架构、更友好的用户界面和更强大的功能扩展
   image:
     src: /logo.png

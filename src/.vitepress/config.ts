@@ -1,11 +1,17 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'OpenTCS Plus',
+  title: 'OpenTCSPlus',
   description: 'OpenTCS Plus 项目文档网站',
   base: '/',
   
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }]
+  ],
+  
   themeConfig: {
+    logo: '/logo.png',
+    
     nav: [
       { text: '首页', link: '/' },
       { text: '概述', link: '/overview/about' },
@@ -49,3 +55,4 @@ export default defineConfig({
     ]
   }
 })
+
